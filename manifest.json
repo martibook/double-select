@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Double Select",
+  "version": "1.0",
+  "description": "Select a context text as A, and select a part of it as B, ask LLM to explain B given the context of A.",
+  "permissions": ["storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["config.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
