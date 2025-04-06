@@ -1,0 +1,9 @@
+.full-highlight {
+    background-color: yellow;
+    font-weight: bold;
+}
+
+.partial-highlight {
+    background-color: orange;
+    font-style: italic;
+}
