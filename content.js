@@ -66,6 +66,48 @@ async function callAzureOpenAIUsingFetch(context, keyPhrase) {
   }
 }
 
+// After the last existing line, add the openSidePane function:
+function openSidePane(content) {
+  // Check if the side pane is already in the DOM
+  let sidePane = document.getElementById("extension-side-pane");
+  if (!sidePane) {
+    // If not, create a new div for the pane
+    sidePane = document.createElement("div");
+    sidePane.id = "extension-side-pane";
+    sidePane.style.position = "fixed";
+    sidePane.style.top = "0";
+    sidePane.style.right = "0";
+    sidePane.style.width = "400px";
+    sidePane.style.height = "100%";
+    sidePane.style.backgroundColor = "#FFFFFF";
+    sidePane.style.borderLeft = "1px solid #cccccc";
+    sidePane.style.zIndex = "999999";
+    sidePane.style.overflowY = "auto";
+    sidePane.style.padding = "10px";
+
+    // Create a simple "Close" button
+    const closeButton = document.createElement("button");
+    closeButton.innerText = "Close";
+    closeButton.style.marginBottom = "10px";
+    closeButton.addEventListener("click", () => {
+      sidePane.remove();
+    });
+
+    sidePane.appendChild(closeButton);
+
+    // Create a content area where we’ll drop the API response
+    const contentDiv = document.createElement("div");
+    contentDiv.id = "extension-side-pane-content";
+    sidePane.appendChild(contentDiv);
+
+    document.body.appendChild(sidePane);
+  }
+
+  // Update the pane content with the new text
+  const contentDiv = document.getElementById("extension-side-pane-content");
+  contentDiv.innerHTML = content;
+}
+
 // Listen for text selection
 document.addEventListener("mouseup", () => {
   const selection = window.getSelection();
@@ -88,9 +130,11 @@ document.addEventListener("mouseup", () => {
       partialSelection = highlightSelection(selection, "partial-highlight");
       console.log("Partial selection:\n\t", partialSelection);
 
-      callAzureOpenAIUsingFetch(fullSelection, partialSelection).then(
-        console.log
-      );
+      callAzureOpenAIUsingFetch(fullSelection, partialSelection).then((response) => {
+        console.log(response);
+        // Open the side pane with the API response
+        openSidePane(response);
+      });
 
       // Store selections for further use
       chrome.storage.local.set({ fullSelection, partialSelection });
